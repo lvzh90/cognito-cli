@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = (adapter) => ({
 	signUp: (username, email, password) => {
 		return new Promise((resolve, reject) => {

@@ -1,6 +1,11 @@
+require('dotenv').config();
+
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const { signUp, verify, signIn } = require('./app')
+const cognito = require('./src/drivers/cognito');
+const app = require('./app')
+
+const  { signUp, verify, signIn } = app(cognito);
 
 yargs(hideBin(process.argv))
 .command('signUp', 'SignUp a user',
@@ -21,8 +26,9 @@ yargs(hideBin(process.argv))
         type: 'string'
     })
 },
-(argv) => {
-    signUp(argv.username, argv.email, argv.password)
+async (argv) => {
+   const response = await signUp(argv.username, argv.email, argv.password);
+   console.log(response);
 })
 .parse()
 
@@ -40,8 +46,9 @@ yargs(hideBin(process.argv))
         type: 'string'
     })
 },
-(argv) => {
-    verify(argv.username, argv.verificationCode)
+async (argv) => {
+    const response = await verify(argv.username, argv.verificationCode);
+    console.log(response);
 })
 .parse()
 
@@ -59,7 +66,8 @@ yargs(hideBin(process.argv))
         type: 'string'
     })
 },
-(argv) => {
-    signIn(argv.username, argv.password)
+async (argv) => {
+    const response = await signIn(argv.username, argv.password);
+    console.log(response);
 })
 .parse()

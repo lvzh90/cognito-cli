@@ -1,21 +1,7 @@
 'use strict';
-require('dotenv').config();
 
-const Cognito = require('./src/utils/cognito');
-
-async function signUp(username, email, password) {
-    const response = await Cognito.signUp(username, email, password);
-    console.log(response);
-}
-
-async function verify(username, verificationCode) {
-    const response = await Cognito.verify(username, verificationCode);
-    console.log(response);
-}
-
-async function signIn(username, password) {
-    const response = await Cognito.signIn(username, password);
-    console.log(response);
-}
-
-module.exports = { signUp, verify, signIn }
+module.exports = (cognito) => ({
+    signUp: async (username, email, password) => cognito.signUp(username, email, password),
+    verify: async (username, verificationCode) => cognito.verify(username, verificationCode),
+    signIn: async (username, password) => cognito.signIn(username, password)
+})

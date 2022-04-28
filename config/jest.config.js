@@ -5,7 +5,9 @@ module.exports = {
 	  '!src/index.js',
 	  '!src/drivers/cognito/index.js',
 	  '!src/drivers/cognito/adapter.js',
+	  '!tests/utils/**/*',
 	],
+	modulePathIgnorePatterns: ['<rootDir>/tests/utils/'],
 	coverageThreshold: {
 	  global: {
 		branches: 80,

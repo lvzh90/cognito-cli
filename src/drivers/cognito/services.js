@@ -5,19 +5,23 @@ module.exports = (adapter) => ({
 		return new Promise((resolve, reject) => {
 			adapter.initAWS();
 			adapter.setCognitoAttributeList(email);
+			const userPool = adapter.getUserPool();
 		
-			adapter.getUserPool().signUp(username, password, adapter.getCognitoAttributeList(), null, function(err, result) {
-			  if (err) {
-				console.error('[cognito:SingUp]: Something went wrong registering the user', err.message)
-				return reject(err);
-			  }
-			  const response = {
-				username: result.user.username,
-				userConfirmed: result.userConfirmed,
-				userAttributes: result.user,
-			  }
+			userPool.signUp(username, password, adapter.getCognitoAttributeList(), null, function(err, result) {
+				console.log('Data: ', { err, result }) 
+				if (err) {
+					console.error('[cognito:SingUp]: Something went wrong registering the user', err.message)
+					return reject(err);
+				}
+
+				const response = {
+					username: result.user.username,
+					userConfirmed: result.userConfirmed,
+					userAttributes: result.user,
+				}
+
 				return resolve(response);
-			  });
+				});
 			});
 	},
 

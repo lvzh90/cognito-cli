@@ -60,7 +60,6 @@ function initAWS (region = process.env.AWS_COGNITO_REGION, identityPoolId = proc
 }
   
 function decodeJWTToken(token) {
-	console.log(jwt_decode(token.idToken))
 	const { email, exp, auth_time , token_use, sub} = jwt_decode(token.idToken);
 	return {  token, email, exp, uid: sub, auth_time, token_use };
 }

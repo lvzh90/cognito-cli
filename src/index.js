@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const yargs = require('yargs/yargs');
 const { hideBin } = require('yargs/helpers');
-const cognito = require('./src/drivers/cognito');
+const cognito = require('./drivers/cognito');
 const app = require('./app')
 
 const  { signUp, verify, signIn } = app(cognito);

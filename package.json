@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "tests": "jest --config ./config/jest.config.js --watch-all",
+    "tests:coverage": "jest --config ./config/jest.config.js --coverage"
   },
   "author": "Linda Vanessa Zapata Henao <lvzh90@gmail.com>",
   "license": "ISC",
@@ -14,5 +16,9 @@
     "dotenv": "^16.0.0",
     "jwt-decode": "^3.1.2",
     "yargs": "^17.4.1"
+  },
+  "devDependencies": {
+    "faker": "^6.6.6",
+    "jest": "^28.0.2"
   }
 }

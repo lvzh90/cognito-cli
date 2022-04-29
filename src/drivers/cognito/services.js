@@ -1,43 +1,49 @@
 'use strict';
 
-module.exports = (adapter) => ({
-	signUp: (username, email, password) => {
-		return new Promise((resolve, reject) => {
-			adapter.initAWS();
-			adapter.setCognitoAttributeList(email);
-			const userPool = adapter.getUserPool();
-		
-			userPool.signUp(username, password, adapter.getCognitoAttributeList(), null, function(err, result) {
-				console.log('Data: ', { err, result }) 
-				if (err) {
-					console.error('[cognito:SingUp]: Something went wrong registering the user', err.message)
-					return reject(err);
-				}
 
-				const response = {
-					username: result.user.username,
-					userConfirmed: result.userConfirmed,
-					userAttributes: result.user,
-				}
+module.exports = (promisify, adapter) => ({
+	signUp: async (username, email, password) => {
+	
+		adapter.initAWS();
+		adapter.setCognitoAttributeList(email);
+		const userPool = adapter.getUserPool();
+		const signUpPromise = promisify(userPool.signUp).bind(userPool);
 
-				return resolve(response);
-				});
-			});
+		try {
+
+			const result = await signUpPromise(username, password, adapter.getCognitoAttributeList(), null);
+
+			const response = {
+				username: result.user.username,
+				userConfirmed: result.userConfirmed,
+			}
+
+			return response;
+
+		} catch (err) {
+			console.log('[Cognito:SignUp]: Something went wrong registering the user', err.message)
+			throw err;
+		}
 	},
 
-	verify: (username, code) => {
-		return new Promise((resolve, reject) => {
-			adapter.getCognitoUser(username).confirmRegistration(code, true, (err, result) => {
-			  if (err) {
-				console.error('[cognito:Verify]: Something went wrong verifying the user', err.message)
-				return reject(err);
-			  }
-			  return resolve(result);
-			});
-		  });
+	verify: async (username, code) => {
+
+		const cognitoUser = adapter.getCognitoUser(username);
+		const confirmRegistrationPromise = promisify(cognitoUser.confirmRegistration).bind(cognitoUser);
+
+		try {
+
+			const result = await confirmRegistrationPromise(code, true);
+			return result;
+
+		} catch (err) {
+			console.log('[Cognito:Verify]: Something went wrong validating the account of the user', err.message);
+			throw err;	
+		}
 	},
 
-	signIn: (username, password) => {
+	/* istanbul ignore next */
+	signIn: async (username, password) => {
 		return new Promise((resolve, reject) => {
 			adapter.getCognitoUser(username).authenticateUser(adapter.getAuthDetails(username, password), {
 				onSuccess: (result) => {
